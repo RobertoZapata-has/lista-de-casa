@@ -9,9 +9,6 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<style>
-  /* ====== PASO 1: pegá acá la URL de tu Apps Script (termina en /exec) ====== */
-</style>
 <script>
   // ====== PASO 1: pegá acá la URL de tu Apps Script (termina en /exec) ======
   const API_URL = "https://script.google.com/macros/s/AKfycbxkvlBPbNnePslgQalMY8nSsxqWp-om69pUa20vCikrGA7LRvD0VAb5jfAHKKgX4iE/exec";
@@ -28,10 +25,7 @@
   body{margin:0; background:var(--paper); color:var(--ink); font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif; overscroll-behavior-y:none; display:flex; flex-direction:column; min-height:100vh;}
   .display{font-family:'Space Grotesk',sans-serif;}
 
-  #configWarning{
-    background:var(--danger); color:#fff; font-size:13px; font-weight:600;
-    padding:10px 16px; text-align:center; display:none;
-  }
+  #configWarning{background:var(--danger); color:#fff; font-size:13px; font-weight:600; padding:10px 16px; text-align:center; display:none;}
 
   header{padding: calc(16px + var(--safe-t)) 18px 14px; background:var(--teal-deep); color:#F3EFE4; display:flex; align-items:center; justify-content:space-between; flex-shrink:0;}
   header h1{font-size:19px; margin:0; font-weight:700; letter-spacing:-0.01em;}
@@ -40,11 +34,14 @@
   .who-pill .dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;}
   .who-pill:active{opacity:0.75;}
 
-  main{flex:1; padding:16px 16px calc(120px + var(--safe-b)); max-width:560px; width:100%; margin:0 auto;}
+  main{flex:1; padding:16px 16px calc(190px + var(--safe-b)); max-width:560px; width:100%; margin:0 auto;}
 
   .section-label{font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:0.06em; color:var(--ink-faint); margin:22px 2px 8px; display:flex; align-items:center; justify-content:space-between;}
   .section-label:first-child{margin-top:4px;}
-  .clear-btn{background:none; border:none; color:var(--ink-soft); font-size:12px; font-weight:600; text-decoration:underline; text-underline-offset:2px; padding:4px; cursor:pointer; text-transform:none; letter-spacing:0;}
+  .text-btn{background:none; border:none; color:var(--ink-soft); font-size:12px; font-weight:600; text-decoration:underline; text-underline-offset:2px; padding:4px; cursor:pointer; text-transform:none; letter-spacing:0;}
+
+  .cat-heading{font-size:12.5px; font-weight:600; color:var(--ink-soft); margin:14px 2px 6px; display:flex; align-items:center; gap:6px;}
+  .cat-block:first-child .cat-heading{margin-top:0;}
 
   ul{list-style:none; margin:0; padding:0;}
 
@@ -58,8 +55,10 @@
   .item.done .check svg{opacity:1;}
   .item-text{flex:1; min-width:0;}
   .item-name{font-size:15.5px; font-weight:500; color:var(--ink); word-break:break-word;}
+  .item-name .qty{font-weight:400; color:var(--ink-faint); font-size:14px;}
   .item.done .item-name{color:var(--ink-faint); text-decoration:line-through; text-decoration-color:var(--ink-faint);}
   .item-meta{font-size:11.5px; color:var(--ink-faint); margin-top:1px; font-weight:500;}
+  .item-meta.stale{color:var(--ochre-deep); font-weight:700;}
   .del-btn{background:none; border:none; color:var(--ink-faint); font-size:20px; line-height:1; padding:10px 12px; cursor:pointer; flex-shrink:0;}
   .del-btn:active{color:var(--danger);}
 
@@ -67,11 +66,22 @@
   .empty svg{width:48px;height:48px; margin-bottom:14px; opacity:0.55;}
   .empty p{font-size:14.5px; line-height:1.5; margin:0; max-width:260px; margin:0 auto;}
 
-  .toast{position:fixed; left:50%; bottom:calc(96px + var(--safe-b)); transform:translateX(-50%) translateY(10px); background:var(--ink); color:var(--paper); padding:9px 16px; border-radius:999px; font-size:13px; font-weight:500; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:50; white-space:nowrap;}
+  .toast{position:fixed; left:50%; bottom:calc(166px + var(--safe-b)); transform:translateX(-50%) translateY(10px); background:var(--ink); color:var(--paper); padding:9px 16px; border-radius:999px; font-size:13px; font-weight:500; opacity:0; pointer-events:none; transition:opacity .25s, transform .25s; z-index:50; white-space:nowrap; max-width:88vw; text-overflow:ellipsis; overflow:hidden;}
   .toast.show{opacity:1; transform:translateX(-50%) translateY(0);}
 
-  .composer{position:fixed; left:0; right:0; bottom:0; padding: 10px 14px calc(14px + var(--safe-b)); background:linear-gradient(to top, var(--paper) 60%, rgba(243,239,228,0));}
-  .composer-inner{max-width:560px; margin:0 auto; display:flex; align-items:center; gap:8px; background:#fff; border-radius:999px; padding:6px 6px 6px 18px; box-shadow:0 4px 18px rgba(34,34,30,0.14), 0 1px 2px rgba(34,34,30,0.08); border:1px solid var(--line);}
+  .composer{position:fixed; left:0; right:0; bottom:0; padding: 8px 14px calc(14px + var(--safe-b)); background:linear-gradient(to top, var(--paper) 65%, rgba(243,239,228,0));}
+  .composer-extra{max-width:560px; margin:0 auto 6px; display:flex; gap:6px; overflow-x:auto; -ms-overflow-style:none; scrollbar-width:none;}
+  .composer-extra::-webkit-scrollbar{display:none;}
+  .qty-input{flex-shrink:0; width:64px; border:1px solid var(--line); border-radius:999px; padding:7px 10px; font-size:13px; font-family:inherit; color:var(--ink); background:#fff; outline:none;}
+  .qty-input::placeholder{color:var(--ink-faint);}
+  .cat-chip{flex-shrink:0; border:1px solid var(--line); background:#fff; color:var(--ink-soft); border-radius:999px; padding:7px 12px; font-size:12.5px; font-weight:600; white-space:nowrap; cursor:pointer;}
+  .cat-chip.active{background:var(--ochre); border-color:var(--ochre); color:#fff;}
+
+  .composer-inner{max-width:560px; margin:0 auto; display:flex; align-items:center; gap:6px; background:#fff; border-radius:999px; padding:6px 6px 6px 6px; box-shadow:0 4px 18px rgba(34,34,30,0.14), 0 1px 2px rgba(34,34,30,0.08); border:1px solid var(--line);}
+  .mic-btn{width:38px;height:38px; border-radius:50%; background:var(--paper-2); border:none; color:var(--ink-soft); flex-shrink:0; display:flex; align-items:center; justify-content:center; cursor:pointer;}
+  .mic-btn svg{width:17px;height:17px;}
+  .mic-btn.listening{background:var(--ochre); color:#fff; animation:pulse 1.1s infinite;}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(201,138,44,0.45);} 70%{box-shadow:0 0 0 10px rgba(201,138,44,0);} 100%{box-shadow:0 0 0 0 rgba(201,138,44,0);}}
   .composer-inner input{flex:1; border:none; outline:none; font-size:16px; font-family:inherit; color:var(--ink); background:transparent; padding:8px 0; min-width:0;}
   .composer-inner input::placeholder{color:var(--ink-faint);}
   .add-btn{width:40px;height:40px; border-radius:50%; background:var(--ochre); border:none; color:#fff; font-size:22px; display:flex; align-items:center; justify-content:center; flex-shrink:0; cursor:pointer; transition: transform .1s, background .15s;}
@@ -87,12 +97,12 @@
   .who-btn .avatar{width:36px;height:36px; border-radius:50%; margin:0 auto 10px;}
 
   .hidden{display:none !important;}
-  @media (prefers-reduced-motion: reduce){ *{transition:none !important;} }
+  @media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
 </style>
 </head>
 <body>
 
-<div id="configWarning">⚠️ Falta configurar API_URL en el HTML (arriba del todo). Mirá el paso 1 de las instrucciones.</div>
+<div id="configWarning">⚠️ Falta configurar API_URL en el HTML (arriba del todo).</div>
 
 <div id="overlay" class="overlay hidden">
   <h2 class="display">¿Quién sos?</h2>
@@ -116,8 +126,11 @@
 
 <main>
   <div id="pendingSection">
-    <div class="section-label">Falta</div>
-    <ul id="pendingList"></ul>
+    <div class="section-label">
+      <span>Falta</span>
+      <button class="text-btn" id="shareBtn">Compartir</button>
+    </div>
+    <div id="pendingList"></div>
   </div>
 
   <div id="emptyState" class="empty hidden">
@@ -128,15 +141,25 @@
   <div id="doneSection" class="hidden">
     <div class="section-label">
       <span id="doneLabel">Comprado</span>
-      <button class="clear-btn" id="clearDoneBtn">Vaciar</button>
+      <button class="text-btn" id="clearDoneBtn">Vaciar</button>
     </div>
     <ul id="doneList"></ul>
   </div>
 </main>
 
 <div class="composer">
+  <div class="composer-extra">
+    <input id="qtyInput" class="qty-input" placeholder="cant." maxlength="14" autocomplete="off">
+    <button class="cat-chip" data-cat="limpieza">🧽 Limpieza</button>
+    <button class="cat-chip" data-cat="cocina">🍳 Cocina</button>
+    <button class="cat-chip" data-cat="bano">🧻 Baño</button>
+    <button class="cat-chip active" data-cat="otros">📦 Otros</button>
+  </div>
   <div class="composer-inner">
-    <input id="itemInput" type="text" placeholder="¿Qué falta? (vinagre, esponja de acero…)" maxlength="80" autocomplete="off">
+    <button class="mic-btn" id="micBtn" aria-label="Dictar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="11" rx="3"/><path d="M5 10a7 7 0 0 0 14 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+    </button>
+    <input id="itemInput" type="text" placeholder="¿Qué falta?" maxlength="80" autocomplete="off">
     <button class="add-btn" id="addBtn">+</button>
   </div>
 </div>
@@ -150,7 +173,16 @@
   }
 
   const PERSON_COLORS = { Rober: 'var(--teal)', Jesi: 'var(--ochre)' };
+  const CATEGORIES = [
+    { key:'limpieza', label:'Limpieza', emoji:'🧽' },
+    { key:'cocina', label:'Cocina', emoji:'🍳' },
+    { key:'bano', label:'Baño', emoji:'🧻' },
+    { key:'otros', label:'Otros', emoji:'📦' }
+  ];
+  const STALE_DAYS = 4;
+
   let myName = localStorage.getItem('lista-casa-quien');
+  let selectedCat = localStorage.getItem('lista-casa-cat') || 'otros';
   let items = [];
 
   const el = id => document.getElementById(id);
@@ -166,13 +198,16 @@
   const doneLabel = el('doneLabel');
   const countSub = el('countSub');
   const itemInput = el('itemInput');
+  const qtyInput = el('qtyInput');
   const addBtn = el('addBtn');
+  const micBtn = el('micBtn');
+  const shareBtn = el('shareBtn');
   const toastEl = el('toast');
 
   function showToast(msg){
     toastEl.textContent = msg;
     toastEl.classList.add('show');
-    setTimeout(()=> toastEl.classList.remove('show'), 2200);
+    setTimeout(()=> toastEl.classList.remove('show'), 2400);
   }
 
   function relTime(iso){
@@ -184,6 +219,10 @@
     if(hs < 24) return 'hace ' + hs + (hs===1?' hora':' horas');
     const days = Math.round(hs/24);
     return 'hace ' + days + (days===1?' día':' días');
+  }
+
+  function daysSince(iso){
+    return (Date.now() - new Date(iso).getTime()) / 86400000;
   }
 
   function setWho(name){
@@ -203,6 +242,16 @@
     btn.addEventListener('click', ()=> pickName(btn.dataset.name));
   });
 
+  document.querySelectorAll('.cat-chip').forEach(chip=>{
+    if(chip.dataset.cat === selectedCat) chip.classList.add('active');
+    else chip.classList.remove('active');
+    chip.addEventListener('click', ()=>{
+      selectedCat = chip.dataset.cat;
+      localStorage.setItem('lista-casa-cat', selectedCat);
+      document.querySelectorAll('.cat-chip').forEach(c=> c.classList.toggle('active', c===chip));
+    });
+  });
+
   async function fetchItems(){
     try{
       const res = await fetch(API_URL, { method:'GET' });
@@ -210,7 +259,7 @@
       return data.items || [];
     }catch(e){
       showToast('No se pudo conectar. Revisá tu internet.');
-      return items; // keep last known state
+      return items;
     }
   }
 
@@ -218,7 +267,7 @@
     try{
       const res = await fetch(API_URL, {
         method:'POST',
-        headers:{ 'Content-Type':'text/plain;charset=utf-8' }, // evita el preflight CORS
+        headers:{ 'Content-Type':'text/plain;charset=utf-8' },
         body: JSON.stringify(payload)
       });
       const data = await res.json();
@@ -231,7 +280,7 @@
   }
 
   function render(){
-    const pending = items.filter(i=>!i.done).sort((a,b)=> new Date(b.addedAt)-new Date(a.addedAt));
+    const pending = items.filter(i=>!i.done);
     const done = items.filter(i=>i.done).sort((a,b)=> new Date(b.doneAt)-new Date(a.doneAt));
 
     countSub.textContent = pending.length === 0 ? 'no falta nada' : (pending.length + (pending.length===1 ? ' cosa falta' : ' cosas faltan'));
@@ -241,7 +290,16 @@
     doneSection.classList.toggle('hidden', done.length===0);
     doneLabel.textContent = 'Comprado' + (done.length ? ' (' + done.length + ')' : '');
 
-    pendingList.innerHTML = pending.map(rowHtml).join('');
+    pendingList.innerHTML = CATEGORIES.map(cat=>{
+      const catItems = pending.filter(i => (i.category || 'otros') === cat.key)
+        .sort((a,b)=> new Date(b.addedAt)-new Date(a.addedAt));
+      if(!catItems.length) return '';
+      return '<div class="cat-block">' +
+        '<div class="cat-heading">' + cat.emoji + ' ' + cat.label + '</div>' +
+        '<ul>' + catItems.map(rowHtml).join('') + '</ul>' +
+      '</div>';
+    }).join('');
+
     doneList.innerHTML = done.map(rowHtml).join('');
 
     pendingList.querySelectorAll('.item').forEach(bindRow);
@@ -250,9 +308,11 @@
 
   function rowHtml(it){
     const color = PERSON_COLORS[it.addedBy] || 'var(--ink-faint)';
+    const isStale = !it.done && daysSince(it.addedAt) >= STALE_DAYS;
     const meta = it.done
       ? (it.doneBy || it.addedBy) + ' lo compró ' + relTime(it.doneAt)
-      : (it.addedBy || '—') + ' · ' + relTime(it.addedAt);
+      : (isStale ? '⏰ ' : '') + (it.addedBy || '—') + ' · ' + relTime(it.addedAt);
+    const qtyHtml = it.qty ? ' <span class="qty">(' + escapeHtml(it.qty) + ')</span>' : '';
     return '<li class="item' + (it.done?' done':'') + '" data-id="' + it.id + '">' +
       '<div class="tab" style="background:' + color + '"></div>' +
       '<div class="item-body">' +
@@ -260,8 +320,8 @@
           '<svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>' +
         '</div>' +
         '<div class="item-text">' +
-          '<div class="item-name">' + escapeHtml(it.name) + '</div>' +
-          '<div class="item-meta">' + escapeHtml(meta) + '</div>' +
+          '<div class="item-name">' + escapeHtml(it.name) + qtyHtml + '</div>' +
+          '<div class="item-meta' + (isStale?' stale':'') + '">' + escapeHtml(meta) + '</div>' +
         '</div>' +
       '</div>' +
       '<button class="del-btn" aria-label="Borrar">×</button>' +
@@ -309,9 +369,11 @@
   async function addItem(){
     const text = itemInput.value.trim();
     if(!text) return;
+    const qty = qtyInput.value.trim();
     itemInput.value = '';
+    qtyInput.value = '';
     addBtn.disabled = true;
-    const data = await callApi({ action:'add', name: text, by: myName });
+    const data = await callApi({ action:'add', name: text, qty, category: selectedCat, by: myName });
     if(data && data.items){ items = data.items; render(); }
     addBtn.disabled = false;
     itemInput.focus();
@@ -319,6 +381,56 @@
 
   addBtn.addEventListener('click', addItem);
   itemInput.addEventListener('keydown', e=>{ if(e.key === 'Enter') addItem(); });
+
+  // --- Dictado por voz ---
+  const SpeechRecognitionCtor = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recognition = null;
+  if(SpeechRecognitionCtor){
+    recognition = new SpeechRecognitionCtor();
+    recognition.lang = 'es-AR';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+    recognition.addEventListener('result', e=>{
+      const text = e.results[0][0].transcript;
+      itemInput.value = text.charAt(0).toUpperCase() + text.slice(1);
+      itemInput.focus();
+    });
+    recognition.addEventListener('end', ()=> micBtn.classList.remove('listening'));
+    recognition.addEventListener('error', ()=>{
+      micBtn.classList.remove('listening');
+      showToast('No se entendió, probá de nuevo');
+    });
+  }
+  micBtn.addEventListener('click', ()=>{
+    if(!recognition){ showToast('Tu navegador no soporta dictado por voz'); return; }
+    micBtn.classList.add('listening');
+    try{ recognition.start(); }catch(e){ /* ya estaba escuchando */ }
+  });
+
+  // --- Compartir por WhatsApp ---
+  function buildShareText(){
+    const pending = items.filter(i=>!i.done);
+    const lines = ['🛒 *Lista de casa*', ''];
+    CATEGORIES.forEach(cat=>{
+      const catItems = pending.filter(i => (i.category||'otros') === cat.key);
+      if(!catItems.length) return;
+      lines.push(cat.emoji + ' ' + cat.label);
+      catItems.forEach(it=> lines.push('• ' + it.name + (it.qty ? ' (' + it.qty + ')' : '')));
+      lines.push('');
+    });
+    return lines.join('\n').trim();
+  }
+
+  shareBtn.addEventListener('click', async ()=>{
+    const pending = items.filter(i=>!i.done);
+    if(!pending.length){ showToast('No hay nada para compartir'); return; }
+    const text = buildShareText();
+    if(navigator.share){
+      try{ await navigator.share({ text, title:'Lista de casa' }); }catch(e){ /* cancelado, ignorar */ }
+    } else {
+      window.open('https://wa.me/?text=' + encodeURIComponent(text), '_blank');
+    }
+  });
 
   async function refresh(){
     items = await fetchItems();
